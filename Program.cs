@@ -12,24 +12,23 @@ namespace LinuxVmApi
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; set; }
         public static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder().AddEnvironmentVariables();
 
-            Configuration = builder.Build();
-            CreateHostBuilder(args).Build().Run();
+            IConfiguration config = builder.Build();
+            CreateHostBuilder(args, config).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration config) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 webBuilder.ConfigureAppConfiguration(configure =>
                 {
                     configure.AddAzureAppConfiguration(op =>
                     {
-                        op.Connect(new Uri(Configuration["appconfigEndpoint"]),
-                         new ManagedIdentityCredential(Configuration["appconfigClientId"]));
+                        op.Connect(new Uri(config["appconfigEndpoint"]),
+                         new ManagedIdentityCredential(config["appconfigClientId"]));
                     });
                 }).UseStartup<Startup>());
     }
