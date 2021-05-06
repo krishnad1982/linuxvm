@@ -42,7 +42,10 @@ namespace LinuxVmApi.Controllers
         [HttpGet("config")]
         public IActionResult GetConfig()
         {
-           string result= _config.GetValue<string>("LinuxVmApi:Name");
+            string name = _config.GetValue<string>("LinuxVmApi:Name");
+            string appEndPoint = _config.GetValue<string>("appconfigEndpoint");
+            string appClientId = _config.GetValue<string>("appconfigClientId");
+            string result = $"{name} - {appEndPoint} - {appClientId}";
             return Ok(result);
         }
     }

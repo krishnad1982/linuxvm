@@ -38,11 +38,11 @@ namespace LinuxVmApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 webBuilder.ConfigureAppConfiguration(configure =>
                 {
-                    configure.AddAzureAppConfiguration(op =>
-                    {
-                        op.Connect(new Uri(config["appconfigEndpoint"]),
-                        new ManagedIdentityCredential(config["appconfigClientId"]));
-                    });
+                    // configure.AddAzureAppConfiguration(op =>
+                    // {
+                    //     op.Connect(new Uri(config["appconfigEndpoint"]),
+                    //     new ManagedIdentityCredential(config["appconfigClientId"]));
+                    // });
                 }).UseStartup<Startup>());
     }
 }
