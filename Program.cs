@@ -24,7 +24,7 @@ namespace LinuxVmApi
             {
                 IHost host = CreateHostBuilder(args, config).Build();
                 logger = host.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation($"my app config endpoint is {config["appconfigEndpoint"]}");
+                logger.LogInformation($"my app config endpoint is {config["appconfigEndpoint"]} and client id {config["appconfigClientId"]}");
                 host.Run();
             }
             catch (Exception ex)
@@ -40,11 +40,11 @@ namespace LinuxVmApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 webBuilder.ConfigureAppConfiguration(configure =>
                 {
-                    // configure.AddAzureAppConfiguration(op =>
-                    // {
-                    //     op.Connect(new Uri(config["appconfigEndpoint"]),
-                    //     new ManagedIdentityCredential(config["appconfigClientId"]));
-                    // });
+                    configure.AddAzureAppConfiguration(op =>
+                    {
+                        op.Connect(new Uri(config["appconfigEndpoint"]),
+                        new ManagedIdentityCredential(config["appconfigClientId"]));
+                    });
                 }).UseStartup<Startup>());
     }
 }
