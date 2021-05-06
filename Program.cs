@@ -24,7 +24,7 @@ namespace LinuxVmApi
             {
                 IHost host = CreateHostBuilder(args, config).Build();
                 logger = host.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("krishna logs", config["appconfigEndpoint"]);
+                logger.LogInformation($"my app config endpoint is {config["appconfigEndpoint"]}");
                 host.Run();
             }
             catch (Exception ex)
