@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -16,8 +17,20 @@ namespace LinuxVmApi
         {
             var builder = new ConfigurationBuilder().AddEnvironmentVariables();
 
+            
+
             IConfiguration config = builder.Build();
-            CreateHostBuilder(args, config).Build().Run();
+            try
+            {
+                IHost host = CreateHostBuilder(args, config).Build();
+                var logger = host.Services.GetRequiredService<ILogger<Program>>();
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration config) =>
@@ -28,7 +41,7 @@ namespace LinuxVmApi
                     configure.AddAzureAppConfiguration(op =>
                     {
                         op.Connect(new Uri(config["appconfigEndpoint"]),
-                         new ManagedIdentityCredential(config["appconfigClientId"]));
+                        new ManagedIdentityCredential(config["appconfigClientId"]));
                     });
                 }).UseStartup<Startup>());
     }
