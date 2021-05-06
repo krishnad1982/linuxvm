@@ -17,18 +17,20 @@ namespace LinuxVmApi
         {
             var builder = new ConfigurationBuilder().AddEnvironmentVariables();
 
-            
 
+            ILogger<Program> logger = null;
             IConfiguration config = builder.Build();
             try
             {
                 IHost host = CreateHostBuilder(args, config).Build();
-                var logger = host.Services.GetRequiredService<ILogger<Program>>();
+                logger = host.Services.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("info", config);
                 host.Run();
             }
             catch (Exception ex)
             {
-                throw ex;
+                logger.LogError("somehting gone wrong", ex);
+                throw;
             }
 
         }
