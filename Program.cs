@@ -15,16 +15,11 @@ namespace LinuxVmApi
     {
         public static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder().AddEnvironmentVariables();
-
-
             ILogger<Program> logger = null;
-            IConfiguration config = builder.Build();
             try
             {
-                IHost host = CreateHostBuilder(args, config).Build();
+                IHost host = CreateHostBuilder(args).Build();
                 logger = host.Services.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation($"my app config endpoint is {config["appconfigEndpoint"]} and client id {config["appconfigClientId"]}");
                 host.Run();
             }
             catch (Exception ex)
@@ -32,18 +27,20 @@ namespace LinuxVmApi
                 logger.LogError("somehting gone wrong", ex);
                 throw;
             }
-
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration config) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 webBuilder.ConfigureAppConfiguration(configure =>
                 {
+                    var settings = configure.Build();
+                    var endpoint = new Uri(settings["appconfigEndpoint"]);
+                    var clientId = settings["appconfigClientId"];
                     configure.AddAzureAppConfiguration(op =>
                     {
-                        op.Connect(new Uri(config["appconfigEndpoint"]),
-                        new ManagedIdentityCredential(config["appconfigClientId"]));
+                        op.Connect(endpoint,
+                        new ManagedIdentityCredential(clientId));
                     });
                 }).UseStartup<Startup>());
     }
