@@ -35,8 +35,8 @@ namespace LinuxVmApi
                 webBuilder.ConfigureAppConfiguration(configure =>
                 {
                     var settings = configure.Build();
-                    var endpoint = new Uri(settings["appconfigEndpoint"]);
-                    var clientId = settings["appconfigClientId"];
+                    var endpoint = new Uri("https://mytest2021config.azconfig.io");
+                    var clientId = "b4f072bd-4e10-47f0-b827-3b67ed3742f1";
                     configure.AddAzureAppConfiguration(op =>
                     {
                         op.Connect(endpoint,
